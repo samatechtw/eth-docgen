@@ -1,0 +1,16 @@
+{
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true
+    },
+    "files.exclude": {
+        "**/node_modules": true,
+        "**/src/**/*postcss.json": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/dist": true
+    },
+    "editor.tabSize": 2
+}

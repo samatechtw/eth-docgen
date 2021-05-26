@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2020",
+    "lib": ["ESNext"],
+    "esModuleInterop": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationDir": "dist/",
+    "outDir": "dist/"
+  },
+  "typeRoots": ["./typings", "./node_modules/@types"],
+  "exclude": [
+    "**/dist",
+    "**/node_modules",
+    "**/test"
+  ]
+}
