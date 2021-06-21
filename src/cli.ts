@@ -1,22 +1,24 @@
-/*
-    parser = argparse.ArgumentParser(description="Ethereum HTML Document Generator", epilog="\n\n")
-    parser.add_argument("-o", "--output", metavar='dir', help="Output directory")
-
-    parser.add_argument("-c", "--contract", metavar='file', help="Contract to generate docs for", required=True)
-
-    parser.add_argument("-s", "--style", help="Inline CSS with output HTML", action='store_true')
-
-    args = parser.parse_args()
-    
-    out_dir = path.join(os.getcwd(), args.output) if args.output else None
-
-  */
-
 import path from 'path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import compile from './compile';
-import generateDocs from './docgen';
+import writeDocs from './docgen';
+
+const contractText = {
+  title: '{name} Contract Documentation',
+  overview: 'Contract Overview',
+  author: 'Authored by {authors}',
+  inherits: 'Inherits from {inherits}',
+  pragmas: 'Pragmas',
+  stateVars: 'State Variables',
+  structs: 'Structs',
+  fields: 'Fields',
+  events: 'Events',
+  parameters: 'Parameters',
+  functions: 'Functions',
+  returns: 'Returns',
+  footer: 'Contract documentation generated with {link}',
+};
 
 interface Arguments {
   o: string,
@@ -62,8 +64,9 @@ const compiledData = compile(contractPath);
 if(compiledData.error) {
   console.log(`Error during compilation:\n${compiledData.error}`);
 } else {
-  generateDocs({
+  writeDocs({
     compiledData,
+    formatStrings: contractText,
     outDir: argv.o,
     format: argv.f,
     inlineCss: argv.s || false,

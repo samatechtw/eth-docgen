@@ -1,22 +1,18 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import sourceMaps from 'rollup-plugin-sourcemaps';
-import typescript from '@rollup/plugin-typescript';
 import { terser } from 'rollup-plugin-terser';
-import dts from 'rollup-plugin-dts';
-import del from 'rollup-plugin-delete';
+import json from '@rollup/plugin-json';
 
 const pkg = require('./package.json');
 
 export default [
   {
-    input: 'src/cli.ts',
+    input: 'dist/src/cli.js',
     output: [
       {
         exports: 'named',
         file: pkg.main,
         format: 'cjs',
-        sourcemap: true,
         plugins: [terser()],
       },
       {
@@ -25,25 +21,24 @@ export default [
         sourcemap: true,
       },
     ],
-    external: Object.keys(pkg.devDependencies),
-    plugins: [
-      typescript({
-        module: 'ESNext',
-      }),
-      commonjs(),
-      resolve(),
-      sourceMaps(),
+    external: [
+      'child_process',
+      'fs',
+      'path',
+      'os',
+      'https',
+      'readline',
+      'zlib',
+      'events',
+      'stream',
+      'util',
+      'buffer',
+      ...Object.keys(pkg.devDependencies),
     ],
-  },
-  {
-    input: "dist/cli.d.ts",
-    output: [{ file: "dist/eth-docgen.d.ts", format: 'es' }],
     plugins: [
-      dts(),
-      del({
-        targets: ['dist/*.d.ts', '!dist/eth-docgen.d.ts'],
-        hook: 'buildEnd',
-      }),
-    ]
+      resolve(),
+      json(),
+      commonjs({include: 'node_modules/**'}),
+    ],
   },
 ];

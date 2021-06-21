@@ -1,8 +1,8 @@
 node_modules
 .DS_Store
 dist
+output
 out-tsc
 
 contracts.json
 pnpm-lock.yaml
-

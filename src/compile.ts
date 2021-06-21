@@ -2,15 +2,18 @@ import path from 'path';
 import solc from 'solc';
 import fg from 'fast-glob';
 import { readFileSync } from 'fs';
-import { CompiledData } from './types';
+import { CompiledData, ContractData, defaultContractData } from './types';
 
 function compile(contractPath: string): CompiledData {
   let error = null;
   let compilerVersion = 'Unknown';
-  const contracts: any = {};
+  const contracts: Record<string, ContractData> = {};
   try {
     const name = path.basename(contractPath);
-    contracts[name] = { source: readFileSync(contractPath, 'utf-8') };
+    contracts[name] = {
+      ...defaultContractData,
+      source: readFileSync(contractPath, 'utf-8'),
+    };
 
     const outputSelection = {
       "*": {
@@ -36,7 +39,10 @@ function compile(contractPath: string): CompiledData {
     const findImports = (path: string) => {
       if(contractNames[path]) {
         if(!contracts.path) {
-          contracts[path] = { source: readFileSync(contractNames[path], 'utf-8') };
+          contracts[path] = {
+            ...defaultContractData,
+            source: readFileSync(contractNames[path], 'utf-8'),
+          };
         }
         return { contents: contracts[path].source };
       }
@@ -54,7 +60,6 @@ function compile(contractPath: string): CompiledData {
         const data: any = Object.values(value)[0];
         const metadata = JSON.parse(data.metadata);
         if(index === 0) {
-          console.log('Contract', Object.keys(data));
           compilerVersion = metadata.compiler.version;
         }
         contracts[name] = {
@@ -71,7 +76,7 @@ function compile(contractPath: string): CompiledData {
         }
       });
     }
-    
+
   } catch(e) {
     error = `Failed to compile: ${e.message}`;
   }

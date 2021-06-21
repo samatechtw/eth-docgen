@@ -7,16 +7,13 @@
     "strict": true,
     "strictNullChecks": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "declaration": true,
     "declarationDir": "dist/",
-    "outDir": "dist/"
+    "rootDir": "src",
+    "outDir": "dist/src"
   },
   "typeRoots": ["./typings", "./node_modules/@types"],
-  "exclude": [
-    "**/dist",
-    "**/node_modules",
-    "**/test"
-  ]
+  "include": ["src/**/*.ts", "typings/**/*.ts"]
 }
