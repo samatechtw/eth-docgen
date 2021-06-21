@@ -15,7 +15,7 @@ export default class MarkdownPrinter extends Printer {
     return '';
   }
 
-  overview(contract: ParsedContract): string {
+  overview(contract: ParsedContract, links: Record<string, string>): string {
     return '';
   }
 

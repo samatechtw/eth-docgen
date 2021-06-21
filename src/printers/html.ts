@@ -5,7 +5,7 @@ import simpleVars from 'postcss-simple-vars';
 import nested from 'postcss-nested';
 import { Printer } from '.';
 import { ContractVar, ParsedContract, Pragma } from '../types';
-import { fmt, fmtListAnd } from '../util';
+import { fmt, fmtListAnd, fmtListLinks } from '../util';
 
 interface TableData {
   label?: string,
@@ -61,17 +61,17 @@ export default class HtmlPrinter extends Printer {
     return `<div class="description">${description}</div>`;
   }
 
-  overview(contract: ParsedContract): string {
+  overview(contract: ParsedContract, links: Record<string, string>): string {
     let text = '<div class="section overview">\n';
     text += `<h2>${this.params.formatStrings.overview}</h2>`;
-    if(contract.authors) {
+    if(contract.authors && contract.authors.length) {
       const authFmt = this.params.formatStrings.author;
       const authors = fmtListAnd(contract.authors);
       text += `<div class="authors">\n${fmt(authFmt, { authors })}\n</div>`;
     }
-    if(contract.inherits) {
+    if(contract.inherits && contract.inherits.length) {
       const inheritFmt = this.params.formatStrings.inherits;
-      const inherits = fmtListAnd(contract.inherits);
+      const inherits = fmtListLinks(contract.inherits, links);
       text += `<div class="inherits">\n${fmt(inheritFmt, { inherits })}\n</div>`;
     }
     if(contract.pragmas) {

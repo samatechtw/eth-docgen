@@ -217,29 +217,40 @@ function parseContracts(contracts: Record<string, ContractData>): ParsedContract
   ));
 }
 
-function generateDocs(params: DocgenParams): Record<string, string>  {
-  const { format, compiledData } = params;
+interface GeneratedDocs {
+  docs: Record<string, string>,
+  links: Record<string, string>,
+}
+
+function generateDocs(params: DocgenParams): GeneratedDocs  {
+  const { format, compiledData, outDir } = params;
   console.log('Generating docs');
   const printerClass = printers[format];
   if(printerClass === undefined) {
     throw new Error(`Unknown file format ${format}`);
   }
   const contracts = parseContracts(compiledData.contracts);
-  fs.writeFileSync('TEMP.json', JSON.stringify(compiledData.contracts, null, 2));
+  const resolvedLinks: Record<string, string> = {};
+  for(const contract of contracts) {
+    resolvedLinks[contract.name] = `${contract.name}.${format}`;
+  }
 
   const printer: Printer = new printerClass(params);
-  return printer.print(contracts);
+  return {
+    docs: printer.print(contracts, resolvedLinks),
+    links: resolvedLinks,
+  };
 }
 
 function writeDocs(params: DocgenParams) {
   const { outDir, format } = params;
   fs.mkdirSync(outDir, { recursive: true });
   console.log(`Writing contracts to ${outDir}`);
-  const docs = generateDocs(params);
+  const { docs, links } = generateDocs(params);
   for(const name in docs) {
     console.log(`Writing ${name}.${format}`);
     try {
-      const p = path.join(outDir, `${name}.${format}`);
+      const p = path.join(outDir, links[name]);
       fs.writeFileSync(p, docs[name]);
     } catch (err) {
       console.error('...failed:', err);

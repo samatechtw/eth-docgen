@@ -71,6 +71,7 @@ export interface ParsedContract {
   name: string,
   // The @title declaration for the contract
   title: string,
+  // The author(s) of the contract
   authors: string[],
   inherits: string[],
   pragmas: Pragma[],
@@ -78,12 +79,4 @@ export interface ParsedContract {
   events: ContractEvent[],
   structs: ContractStruct[],
   functions: ContractFunction[],
-}
-
-export interface PrinterParams {
-  contracts: Record<string, ParsedContract>,
-  compilerVersion: string,
-  outDir: string,
-  format: string,
-  inlineCss: boolean,
 }
